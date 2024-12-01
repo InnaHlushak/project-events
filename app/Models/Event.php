@@ -9,7 +9,7 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','category_id','deadline','venue','description',];
+    protected $fillable = ['name','category_id','deadline','venue','description','popularity'];
 
     /**
      * Specify the one-to-one relationship: one event is associated with one category
@@ -18,4 +18,11 @@ class Event extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * Date Casting
+     */
+    protected $casts = [
+        'deadline' => 'datetime: d-m-Y H:i',
+    ];
 }

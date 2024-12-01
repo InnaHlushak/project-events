@@ -8,8 +8,9 @@
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Категорія: {{ $event->category->name }}</h6>
                     <h5 class="card-title">{{ $event->name }} </h5>
-                    <h5 class="card-subtitle mb-2 text-muted">{{\Carbon\Carbon::parse($event->deadline)->format('d-m-Y H:i') }}</h5>
-                    <h6 class="card-subtitle mb-2">{{ $event->venue}}</h6>
+                    <!-- <h5 class="card-subtitle mb-2 text-muted">{{\Carbon\Carbon::parse($event->deadline)->format('d-m-Y H:i') }}</h5> -->
+                    <h5 class="card-subtitle mb-2 text-muted">{{ $event->deadline }}</h5>
+                    <h6 class="card-subtitle mb-2">{{ $event->venue }}</h6>
                     <p class="card-text">{{ $event->description }}</p>
                     <div class="d-flex justify-content-between">
                         <a href="#" class="btn btn-sm btn-outline-primary">Редагувати</a>
