@@ -19,6 +19,11 @@ class Event extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function costs()
+    {
+        return $this->belongsToMany(Cost::class);
+    }
+
     /**
      * Date Casting
      */

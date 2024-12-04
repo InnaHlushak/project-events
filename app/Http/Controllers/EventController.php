@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\EventRequest;
 use App\Models\Category; 
 use App\Models\Event; 
+use App\Models\Cost; 
 
 class EventController extends Controller
 {
@@ -26,8 +27,9 @@ class EventController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $costs = Cost::all();
 
-        return view('events.create',['categories'=>$categories]);
+        return view('events.create',['categories'=>$categories, 'costs' => $costs]);
     }
 
     /**
@@ -36,9 +38,20 @@ class EventController extends Controller
     public function store(EventRequest $request)
     {
         //get all data from the request (form) except the hidden field _token
-        $data = $request->except('_token');
+        $data = $request->except('_token', 'costs');
+
         //Reference the Event model and create a record in the corresponding table
         $event = Event::create($data);
+
+        //Associate ticket types (by costs) to events
+        //$event->costs()->attach($request->costs);
+        //Parse JSON strings and get an array with only ID
+        $costIds = array_map(function ($cost) {
+            $parsedCost = json_decode($cost, true);
+            return $parsedCost['id'];
+        }, $request->costs);
+        //to attach  cost to event by inserting a record in the relationship's intermediate table
+        $event->costs()->attach($costIds);
 
         return redirect()->route('events.show',[$event]);
     }

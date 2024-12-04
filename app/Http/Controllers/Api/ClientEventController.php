@@ -36,7 +36,7 @@ class ClientEventController extends Controller
     /**
      * Display single event whith id.
      */
-    public function getEvent(string $id, Request $request)
+    public function show(string $id, Request $request)
     {
         //Refer to the Event model and find the 1st record in the table with the specified id 
         $event = Event::findOrFail($id);

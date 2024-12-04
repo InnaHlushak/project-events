@@ -83,6 +83,28 @@
                 @enderror
             </div>
         </div>
+        <div class="row mb-3">
+            <label for="costs" class="col-sm-2 col-form-label">Типи квитків (за вартістю)</label>
+            <div class="col-sm-10">
+                <select 
+                    class="form-select @error('costs') is-invalid @enderror"  
+                    id="costs" 
+                    multiple name="costs[]"
+                >
+                    @foreach($costs as $cost)
+                        <option value="{{ $cost }}">
+                        {{ $cost->name }} 
+                            @if ($cost->price != 0)
+                                - Вартість: {{ $cost->price }} грн.
+                            @endif
+                        </option>
+                    @endforeach
+                </select>
+                @error('costs')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+            </div>
+        </div>    
         <!-- <div class="row mb-3">
             <label for="image" class="col-sm-2 col-form-label">Зображення</label>
             <div class="col-sm-10">

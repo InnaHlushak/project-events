@@ -27,6 +27,9 @@ class EventRequest extends FormRequest
             'deadline' => 'required|date|after:now',
             'venue'=> 'required|min:5|max:255',
             'description'=> 'required|min:5',
+
+            'costs' => 'required|array',
+            // 'costs.*.id' => 'required|integer|exists:costs,id',
         ];
     }
 }
