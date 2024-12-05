@@ -26,8 +26,13 @@
                         </ul>
                     </div>
                     <div class="d-flex justify-content-between">
-                        <a href="#" class="btn btn-sm btn-outline-primary">Редагувати</a>
-                        <a href="#" class="btn btn-sm btn-outline-warning">Видалити</a>
+                        <a href="{{ route('events.edit',[$event]) }}" class="btn btn-sm btn-outline-primary">Редагувати</a>
+                        <!-- При натисканні кнопки "Видалити" перенаправляти користувача на проміжну сторінку
+                        на цій сторінці користувач підтверджує або скасовує видалення. -->
+                        <form action="{{ route('events.confirm_delete', ['event' => $event->id]) }}" method="GET">
+                            @csrf
+                            <button type="submit" class="btn btn-sm btn-outline-warning">Видалити</button>
+                        </form>
                     </div>
                 </div>
             </div>

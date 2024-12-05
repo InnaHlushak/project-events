@@ -70,24 +70,42 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Event $event)
     {
-        //
+        $categories = Category::all();
+        $costs = Cost::all();
+
+        return view('events.edit',['event' => $event, 'categories' => $categories, 'costs' => $costs]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(EventRequest $request, Event $event)
     {
-        //
+        $event->update($request->except('_token'));
+        $event->costs()->sync($request->costs);
+
+        return redirect()->route('events.show',[$event]);
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Event $event)
     {
-        //
+        $event->delete();
+
+        return redirect()->route('events.index');
+    }
+
+    /**
+     * method for confirming delete
+     */
+    public function confirmDelete($id)
+    {
+        $event = Event::findOrFail($id);
+        return view('events.confirm-delete', compact('event'));
     }
 }

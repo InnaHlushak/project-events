@@ -20,3 +20,4 @@ Route::get('/', function () {
 })->name('welcome');
 
 Route::resource('events',EventController::class);
+Route::get('/events/{event}/confirm-delete', [EventController::class, 'confirmDelete'])->name('events.confirm_delete');
