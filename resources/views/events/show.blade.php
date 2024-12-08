@@ -4,7 +4,9 @@
     <div class="container">
         <div class="d-flex justify-content-center">
             <div class="card" style="width: 40rem;">
-                <img src="https://storage.concert.ua/JTU/8/De/6704e41c6a22e/a230.jpg:31-catalog-event_item-desktop2x" class="card-img-top" alt="...">
+                <!-- <img src="https://storage.concert.ua/JTU/8/De/6704e41c6a22e/a230.jpg:31-catalog-event_item-desktop2x" class="card-img-top" alt="..."> -->
+                <img src="{{ asset("storage/$event->image") }}" class="card-img-top" alt="Афіша">
+
                 <div class="card-body">
                     <h6 class="card-subtitle mb-2 text-muted">Категорія: {{ $event->category->name }}</h6>
                     <h5 class="card-title">{{ $event->name }} </h5>

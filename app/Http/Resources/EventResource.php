@@ -20,6 +20,7 @@ class EventResource extends JsonResource
             'deadline' => $this->deadline->format('d-m-Y H:i'),
             'venue' => $this->venue,
             'description' => $this->description,
+            'image' => asset("storage/$this->image"),
             'category_id' => $this->category_id,
             'category' => $this->category->name,
 

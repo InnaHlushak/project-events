@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\EventRequest;
 use App\Models\Category; 
 use App\Models\Event; 
@@ -37,8 +38,13 @@ class EventController extends Controller
      */
     public function store(EventRequest $request)
     {
-        //get all data from the request (form) except the hidden field _token
-        $data = $request->except('_token', 'costs');
+       //get all data from the request (form) except the next
+        $data = $request->except('_token', 'costs', 'image');
+
+        //save the path to the image file in the database
+        if ($request->hasFile('image')) {
+        $data['image']  = $request->file('image')->store('posters');
+        }
 
         //Reference the Event model and create a record in the corresponding table
         $event = Event::create($data);
@@ -86,8 +92,21 @@ class EventController extends Controller
         $event->update($request->except('_token'));
         $event->costs()->sync($request->costs);
 
-        return redirect()->route('events.show',[$event]);
+        if ($request->hasFile('image')) {
+            if (Storage::exists($event->image)) {
+                Storage::delete($event->image);
+            } 
+            
+            $newImagePath = $request->file('image')->store('posters');
+            $event->image = $newImagePath;
+            $event->update(['image' => $newImagePath]);
+        } else {
+            $previousImagePath = $request->input('previous_image');
+            $event->image = $previousImagePath;
+            $event->update(['image' => $previousImagePath]);
+        }
 
+        return redirect()->route('events.show',[$event]);
     }
 
     /**
@@ -95,6 +114,10 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
+        if (Storage::exists($event->image)) {
+            Storage::delete($event->image);
+        }
+        
         $event->delete();
 
         return redirect()->route('events.index');

@@ -9,7 +9,7 @@ class Event extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','category_id','deadline','venue','description','popularity'];
+    protected $fillable = ['name', 'category_id', 'deadline', 'venue', 'description', 'popularity', 'image'];
 
     /**
      * Specify the one-to-one relationship: one event is associated with one category

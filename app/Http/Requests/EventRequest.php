@@ -27,6 +27,7 @@ class EventRequest extends FormRequest
             'deadline' => 'required|date|after:now',
             'venue'=> 'required|min:5|max:255',
             'description'=> 'required|min:5',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,bmp,gif,svg,webp|max:900',
 
             'costs' => 'required|array',
             // 'costs.*.id' => 'required|integer|exists:costs,id',

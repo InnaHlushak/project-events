@@ -113,14 +113,27 @@
                 @enderror
             </div>
         </div>     
-
-        <!-- <div class="row mb-3">
+        <div class="row mb-3">
             <label for="image" class="col-sm-2 col-form-label">Зображення</label>
             <div class="col-sm-10">
-                <input class="form-control" type="file" id="image" name="image">
+                <!-- Field for uploading an image file -->
+                <input 
+                    class="form-control @error('image') is-invalid @enderror" 
+                    type="file" 
+                    id="image" 
+                    name="image"
+                >
+                @error('image')
+                    <div class="alert alert-danger">{{ $message }}</div>
+                @enderror
+                <!-- Hidden field to save previous file path -->
+                <input 
+                    type="hidden" 
+                    name="previous_image" 
+                    value="{{ old('previous_image', $event->image) }}"
+                >
             </div>
-        </div> -->
-
+        </div>
         <button type="submit" class="btn btn-primary">Оновити</button>
     </form>
     </div>
