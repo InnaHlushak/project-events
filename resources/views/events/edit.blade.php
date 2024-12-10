@@ -95,7 +95,6 @@
                     class="form-select @error('costs') is-invalid @enderror"  
                     id="costs" 
                     multiple name="costs[]"
-
                 >
                 @foreach ($costs as $cost)
                     <option 
