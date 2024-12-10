@@ -104,7 +104,10 @@
                             selected 
                         @endif
                     >
-                        {{ $cost->name }}
+                        {{ $cost->name }} 
+                        @if ($cost->price != 0)
+                            - Вартість: {{ $cost->price }} грн.
+                        @endif
                     </option>
                 @endforeach
                 </select>

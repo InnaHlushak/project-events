@@ -92,7 +92,12 @@
                     multiple name="costs[]"
                 >
                     @foreach($costs as $cost)
-                        <option value="{{ $cost }}">
+                        <option 
+                            value="{{ $cost }}" 
+                            @if (in_array($cost, old('costs', $costs->pluck('cost')->toArray()))) 
+                                selected 
+                            @endif
+                        >
                         {{ $cost->name }} 
                             @if ($cost->price != 0)
                                 - Вартість: {{ $cost->price }} грн.
@@ -117,7 +122,6 @@
                 @error('image')
                     <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
-
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Створити</button>
