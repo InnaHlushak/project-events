@@ -61,12 +61,12 @@ class AuthController extends Controller
         }
 
         // Перевірка користувача:
-        if (!auth()->attemp($request->only('email', 'password'))) {
+        if (!auth()->attempt($request->only('email', 'password'))) {
             return response()->json([
                 'message' => ' Credentials not match. Incorrect login or password.'
             ], 401);
         }
-        //отримати цього авторизованого користувача
+        // отримати цього авторизованого користувача
         $user = User::where('email', $request->email)->first();
 
         // Генерація токена, який буде використовуватить у наступних запитах з axios
@@ -75,5 +75,6 @@ class AuthController extends Controller
             // 'user' => $user,     
             'token' => $user->createToken('API Token')->plainTextToken
         ]);
+
     }
 }
