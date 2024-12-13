@@ -17,13 +17,32 @@
             <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
             <span class="fs-4 link-primary">Місто Івано-Франківськ</span>
         </a>
+        <!-- якщо користувач авторизований -->
+        @auth()
         <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
             <li><a href="{{ route('events.index') }}" class="nav-link px-3 link-primary" >ПЕРЕЛІК ПОДІЙ </a></li>
             <li><a href="{{ route('events.create') }}" class="nav-link px-3 link-primary">СТВОРИТИ ПОДІЮ</a></li>
         </ul>
+        @endauth
         <div class="col-md-3 text-end">
+            <!-- для всіх користувачів -->
             <a href="{{ route('welcome') }}" class="btn btn-primary">Головна</a>
-            <a href="#" class="btn btn-warning">Вийти</a>
+            <!-- якщо користувач не авторизований -->
+            @guest()
+                <a href="{{ route('login') }}" class="btn btn-warning">Увійти</a>
+                <a href="{{ route('register') }}" class="btn btn-outline-primary">Зареєструватися</a>
+             @endguest
+             <!-- якщо користувач авторизований -->
+            @auth()
+            <a href="{{ route('logout') }}" 
+                class="btn btn-warning"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                    Вийти
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            @endauth
         </div>
     </header>
 
