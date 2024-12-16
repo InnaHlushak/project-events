@@ -21,6 +21,7 @@ class EventResource extends JsonResource
             'venue' => $this->venue,
             'description' => $this->description,
             'popularity' => $this->popularity,
+            'number' => $this->number,
 
             'image' => asset("storage/$this->image"),
             

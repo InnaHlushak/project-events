@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
+use App\Models\User;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\EventInvitation;
+use App\Mail\EventTicket;
 
 class ClientEventController extends Controller
 {
@@ -61,6 +65,17 @@ class ClientEventController extends Controller
     }
 
     /**
+     * Increment number participants of event whith id.
+     */
+    public function incrementNumber($id)
+    {
+        $event = Event::findOrFail($id);
+        $event->number++;
+        $event->save();
+        return response()->json(['success' => true]);
+    }
+
+    /**
      * Show most popular events (top 3)
      */
     public function popular(Request $request)
@@ -77,5 +92,25 @@ class ClientEventController extends Controller
         }
 
         return response()->json($events);
+    }
+
+    public function sendInvitationMail(string $idEvent, string $idUser, string $number)
+    {
+        $event = Event::findOrFail($idEvent);
+        $user = User::findOrFail($idUser);
+
+        Mail::to($user->email)->send(new EventInvitation($event, $user, $number));
+
+        return response()->json(['success' => true]);
+    }
+
+    public function sendTicketMail(string $idEvent, string $idUser, string $typeTicked, string $finalPrice, string $number)
+    {
+        $event = Event::findOrFail($idEvent);
+        $user = User::findOrFail($idUser);
+
+        Mail::to($user->email)->send(new EventTicket($event, $user, $typeTicked, $finalPrice, $number));
+
+        return response()->json(['success' => true]);
     }
 }

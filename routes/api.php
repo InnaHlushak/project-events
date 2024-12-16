@@ -29,6 +29,12 @@ Route::get('/index',[ClientEventController::class, 'index']);
 Route::get('/popular',[ClientEventController::class, 'popular']);
 Route::get('/event/{id}',[ClientEventController::class, 'show']);
 Route::post('/event/{id}/visit', [ClientEventController::class, 'incrementPopularity']);
+Route::post('/event/{id}/participate', [ClientEventController::class, 'incrementNumber']);
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/emails/event-invitation/{idUser}/{idEvent}/{number}', [ClientEventController::class, 'sendInvitationMail']);
+Route::get('/emails/event-ticket/{idUser}/{idEvent}/{typeTicket}/{finalPrice}/{number}', [ClientEventController::class, 'sendTicketMail']);
+
+
