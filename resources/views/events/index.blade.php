@@ -27,6 +27,7 @@
                 </div>
             @endforeach
         </div>
+        <br>
         <div class="container">
             <div  class="d-flex justify-content-center">
                 <!-- Switching pages in the paginator -->

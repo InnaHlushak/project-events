@@ -19,6 +19,10 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-//Доступ до маршрутів групи events лише для автентифікованого користувача
-Route::resource('events',EventController::class)->middleware(['auth', 'isAdmin']);
-Route::get('/events/{event}/confirm-delete', [EventController::class, 'confirmDelete'])->name('events.confirm_delete');
+Route::resource('events', EventController::class);
+
+//Доступ до усіх маршрутів групи events лише для автентифікованого користувача з роллю admin
+//Route::resource('events',EventController::class)->middleware(['auth', 'isAdmin']);
+
+Route::get('/events/{event}/confirm-delete', [EventController::class, 'confirmDelete'])
+        ->name('events.confirm_delete')->middleware(['auth', 'isAdmin']);

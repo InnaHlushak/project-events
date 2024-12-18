@@ -22,12 +22,9 @@ class EventResource extends JsonResource
             'description' => $this->description,
             'popularity' => $this->popularity,
             'number' => $this->number,
-
-            'image' => asset("storage/$this->image"),
-            
+            'image' => asset("storage/$this->image"),            
             'category_id' => $this->category_id,
             'category' => $this->category->name,
-
             'costs' => $this->costs->map(fn($cost) => [
                 'name' => $cost->name,
                 'price' => $cost->price,
