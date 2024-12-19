@@ -24,11 +24,11 @@ Route::middleware('auth:sanctum')->get('/athenticated', function (Request $reque
     return true;
 });
 
-Route::get('/example',[ClientEventController::class, 'example']);
 Route::get('/index',[ClientEventController::class, 'index']);
 Route::get('/popular',[ClientEventController::class, 'popular']);
 Route::get('/event/{id}',[ClientEventController::class, 'show']);
 Route::post('/event/{id}/visit', [ClientEventController::class, 'incrementPopularity']);
+Route::get('/events/search/{text}', [ClientEventController::class, 'search']);
 
 Route::post(
     '/event/{id}/participate', 

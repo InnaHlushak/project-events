@@ -15,11 +15,6 @@ use App\Mail\EventTicket;
 
 class ClientEventController extends Controller
 {
-    public function example() {
-        $message ='Hello from Laravel';
-        return response()->json(['message'=>$message]);
-    }
-
     /**
      * Display a listing of all events with a date no later than the current one
      */
@@ -92,6 +87,27 @@ class ClientEventController extends Controller
         }
 
         return response()->json($events);
+    }
+
+    /**
+     * Find event records in the database that contain the specified $text, and display a list of all these events
+     */
+    public function search( Request $request,string $text)
+    {
+        $events = Event::where('name', 'like', "%$text%")        
+            ->orWhere('deadline', 'like', "%$text%")
+            ->orWhere('venue', 'like', "%$text%")
+            ->orWhere('description', 'like', "%$text%")
+            ->orWhereHas('category', function ($query) use ($text) {
+                $query->where('name', 'like', "%$text%");
+            })
+            ->orWhereHas('costs', function ($query) use ($text) {
+                $query->where('name', 'like', "%$text%");
+            })
+            ->orderBy('deadline', 'asc')
+            ->paginate(3);
+
+        return EventResource::collection($events);
     }
 
     public function sendInvitationMail(string $idEvent, string $idUser, string $number)
