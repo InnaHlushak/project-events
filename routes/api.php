@@ -28,7 +28,7 @@ Route::get('/index',[ClientEventController::class, 'index']);
 Route::get('/popular',[ClientEventController::class, 'popular']);
 Route::get('/event/{id}',[ClientEventController::class, 'show']);
 Route::post('/event/{id}/visit', [ClientEventController::class, 'incrementPopularity']);
-Route::get('/events/search/{text}', [ClientEventController::class, 'search']);
+Route::post('/events/search/{text}', [ClientEventController::class, 'search']);
 
 Route::post(
     '/event/{id}/participate', 
@@ -38,12 +38,12 @@ Route::post(
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get(
+Route::post(
     '/emails/event-invitation/{idUser}/{idEvent}/{number}', 
     [ClientEventController::class, 'sendInvitationMail']
 )->middleware('auth:sanctum');
 
-Route::get(
+Route::post(
     '/emails/event-ticket/{idUser}/{idEvent}/{typeTicket}/{finalPrice}/{number}', 
     [ClientEventController::class, 'sendTicketMail']
 )->middleware('auth:sanctum');

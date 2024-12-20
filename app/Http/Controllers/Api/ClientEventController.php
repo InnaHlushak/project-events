@@ -95,8 +95,6 @@ class ClientEventController extends Controller
     public function search( Request $request,string $text)
     {
         $events = Event::where('name', 'like', "%$text%")        
-            ->orWhere('deadline', 'like', "%$text%")
-            ->orWhere('venue', 'like', "%$text%")
             ->orWhere('description', 'like', "%$text%")
             ->orWhereHas('category', function ($query) use ($text) {
                 $query->where('name', 'like', "%$text%");
@@ -113,20 +111,38 @@ class ClientEventController extends Controller
     public function sendInvitationMail(string $idEvent, string $idUser, string $number)
     {
         $event = Event::findOrFail($idEvent);
+
+        $currentDate = now();
+        if (strtotime($event->deadline) < strtotime($currentDate)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Не може бути надісланим оскільки термін події пройшов'
+            ]);
+        }
+
         $user = User::findOrFail($idUser);
 
         Mail::to($user->email)->send(new EventInvitation($event, $user, $number));
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Запрошення успішно надіслане']);
     }
 
     public function sendTicketMail(string $idEvent, string $idUser, string $typeTicked, string $finalPrice, string $number)
     {
         $event = Event::findOrFail($idEvent);
+
+        $currentDate = now();
+        if (strtotime($event->deadline) < strtotime($currentDate)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Не може бути надісланим оскільки термін події пройшов'
+            ]);
+        }
+
         $user = User::findOrFail($idUser);
 
         Mail::to($user->email)->send(new EventTicket($event, $user, $typeTicked, $finalPrice, $number));
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => true, 'message' => 'Квиток успішно надісланий']);
     }
 }
