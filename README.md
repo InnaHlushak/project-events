@@ -48,10 +48,11 @@
 
 1. **Клонування репозиторію**
 
-   git clone https://github.com/ InnaHlushak/project-events.git 
+   git clone https://github.com/ InnaHlushak/project-events.git
+   
    cd project-events
 
-2. **Конфігурація середовища:**
+3. **Конфігурація середовища:**
 -  Створіть файл .env на основі .env.example
 
 cp .env.example .env
