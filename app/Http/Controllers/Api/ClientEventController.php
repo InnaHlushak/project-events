@@ -12,6 +12,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EventInvitation;
 use App\Mail\EventTicket;
+use App\Mail\AttendanceReport;
+
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ClientEventController extends Controller
 {
@@ -75,7 +78,7 @@ class ClientEventController extends Controller
      */
     public function popular(Request $request)
     {
-        $currentDate = now(); // Get the current date and time
+        $currentDate = now(); 
         $events = Event::where('deadline', '>=', $currentDate)
                         ->orderBy('popularity', 'desc')
                         ->orderBy('deadline', 'asc')
@@ -108,6 +111,9 @@ class ClientEventController extends Controller
         return EventResource::collection($events);
     }
 
+    /**
+     * Send an event invitation by email
+     */
     public function sendInvitationMail(string $idEvent, string $idUser, string $number)
     {
         $event = Event::findOrFail($idEvent);
@@ -127,6 +133,9 @@ class ClientEventController extends Controller
         return response()->json(['success' => true, 'message' => 'Запрошення успішно надіслане']);
     }
 
+    /**
+     * Send an event ticket by email
+     */
     public function sendTicketMail(string $idEvent, string $idUser, string $typeTicked, string $finalPrice, string $number)
     {
         $event = Event::findOrFail($idEvent);
@@ -144,5 +153,34 @@ class ClientEventController extends Controller
         Mail::to($user->email)->send(new EventTicket($event, $user, $typeTicked, $finalPrice, $number));
 
         return response()->json(['success' => true, 'message' => 'Квиток успішно надісланий']);
+    }
+
+    /**
+     * Send an email with an event attendance report attached as a PDF file
+     */
+    public function sendAttendanceReportMail(string $idUser)
+    {
+        $user = User::findOrFail($idUser);
+        $events = Event::orderBy('number', 'desc')->get();
+        $pdf = Pdf::loadView('pdf.attendance-report', ['events' => $events]);   
+        
+        Mail::to($user->email)->send(new AttendanceReport($events, $pdf));
+
+        return response()->json(['success' => true, 'message' => 'Успішно надіслано']);
+    }
+
+    /**
+     *Generate a PDF file of a report with statistics of popularity of events
+     */
+    public function downloadPopularityReport()
+    {
+        $events = Event::orderBy('popularity', 'desc')->get();
+        $pdf = Pdf::loadView('pdf.popularity-report', ['events' => $events]); 
+
+        //return $pdf->download('popularity-report.pdf');
+        return response($pdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="popularity-report.pdf"',
+        ]);
     }
 }

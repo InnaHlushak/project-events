@@ -47,3 +47,14 @@ Route::post(
     '/emails/event-ticket/{idUser}/{idEvent}/{typeTicket}/{finalPrice}/{number}', 
     [ClientEventController::class, 'sendTicketMail']
 )->middleware('auth:sanctum');
+
+Route::post(
+    '/emails/attendance-report/{idUser}', 
+    [ClientEventController::class, 'sendAttendanceReportMail']
+)->middleware('auth:sanctum');
+
+
+Route::get(
+    '/popularity-report', 
+    [ClientEventController::class, 'downloadPopularityReport']
+)->name('popularity-report');
