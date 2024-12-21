@@ -53,8 +53,22 @@ Route::post(
     [ClientEventController::class, 'sendAttendanceReportMail']
 )->middleware('auth:sanctum');
 
-
-Route::get(
-    '/popularity-report', 
+//Логіка генерації та завантаження звіту із використанням черг:
+//Роут буде викликатися, коли клієнт хоче розпочати генерацію звіту: відправляє завдання в чергу і повертає job_id
+Route::get('/popularity-report', 
     [ClientEventController::class, 'downloadPopularityReport']
 )->name('popularity-report');
+
+//Роут для завантаження файлу після його створення
+Route::get('/download-popularity-report/{jobId}', 
+    [ClientEventController::class, 'downloadReport']
+)->name('download-popularity-report');
+
+//-----------------------------------------------------
+//Проста логіка (без черг) генерації та завантаження звіту:
+//-----------------------------------------------------
+// Route::get(
+//     '/popularity-report', 
+//     [ClientEventController::class, 'downloadPopularityReport']
+// )->name('popularity-report');
+//-----------------------------------------------------

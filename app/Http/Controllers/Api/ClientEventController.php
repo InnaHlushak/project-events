@@ -12,9 +12,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\EventInvitation;
 use App\Mail\EventTicket;
-use App\Mail\AttendanceReport;
 
+use App\Mail\AttendanceReport;
 use Barryvdh\DomPDF\Facade\Pdf;
+
+use App\Jobs\GeneratePopularityPeport;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+
 
 class ClientEventController extends Controller
 {
@@ -162,9 +167,9 @@ class ClientEventController extends Controller
     {
         $user = User::findOrFail($idUser);
         $events = Event::orderBy('number', 'desc')->get();
-        $pdf = Pdf::loadView('pdf.attendance-report', ['events' => $events]);   
-        
-        Mail::to($user->email)->send(new AttendanceReport($events, $pdf));
+
+        $pdf = Pdf::loadView('pdf.attendance-report', ['events' => $events]);        
+        Mail::to($user->email)->send(new AttendanceReport($events, $pdf));        
 
         return response()->json(['success' => true, 'message' => 'Успішно надіслано']);
     }
@@ -175,12 +180,55 @@ class ClientEventController extends Controller
     public function downloadPopularityReport()
     {
         $events = Event::orderBy('popularity', 'desc')->get();
-        $pdf = Pdf::loadView('pdf.popularity-report', ['events' => $events]); 
+        
+        // Створюємо завдання
+        $job = new GeneratePopularityPeport($events);
+        $jobId = $job->jobId;
 
-        //return $pdf->download('popularity-report.pdf');
-        return response($pdf->output(), 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="popularity-report.pdf"',
+        // Диспетчеризуємо завдання в чергу
+        dispatch($job); 
+
+        // Повертаємо користувачу повідомлення, що завдання в процесі
+        return response()->json([
+            'success' => true,
+            'message' => 'Завдання на генерацію звіту відправлено в чергу. Будь ласка зачекайте.',
+            'job_id' => $jobId
         ]);
     }
+
+    public function downloadReport($jobId)
+    {
+        // Перевірка, чи існує файл після завершення завдання
+        $filePath = "reports/{$jobId}.pdf";
+        
+        // Перевіряємо наявність згенерованого файлу
+        if (Storage::disk('public')->exists($filePath)) {
+            return response()->download(
+                Storage::disk('public')->path($filePath),
+                "popularity-report-{$jobId}.pdf",
+                ['Content-Type' => 'application/pdf']
+            );
+        }
+
+        // Якщо файл не знайдено, повідомляємо користувача
+        return response()->json([
+            'success' => false,
+            'message' => 'Файл не знайдено або створення файлу ще не завершено.'
+        ]);
+    }
+
+    //-----------------------------------------------------
+    //Проста логіка (без черг) генерації та завантаження звіту:
+    //-----------------------------------------------------
+    // public function downloadPopularityReport()
+    // {
+    //     $events = Event::orderBy('popularity', 'desc')->get();
+    //     $pdf = Pdf::loadView('pdf.popularity-report', ['events' => $events]); 
+
+    //     return response($pdf->output(), 200, [
+    //         'Content-Type' => 'application/pdf',
+    //         'Content-Disposition' => 'attachment; filename="popularity-report.pdf"',
+    //     ]);
+    // }
+    //-----------------------------------------------------
 }
